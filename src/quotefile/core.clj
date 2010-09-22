@@ -1,4 +1,4 @@
-(ns hello-www.core
+(ns quotefile.core
   (:use compojure.core
         ring.adapter.jetty)
   (:require [compojure.route :as route]))

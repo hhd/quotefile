@@ -1,5 +1,5 @@
-(ns hello-www.test.core
-  (:use [hello-www.core] :reload)
+(ns quotefile.test.core
+  (:use [quotefile.core] :reload)
   (:use [clojure.test]))
 
 (deftest replace-me ;; FIXME: write
