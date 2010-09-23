@@ -1,9 +1,9 @@
 (ns quotefile.core
   (:use compojure.core
         ring.adapter.jetty
-        hiccup.core
-        [clojure.contrib.sql :as sql])
-  (:require [compojure.route :as route])
+        hiccup.core)
+  (:require [compojure.route :as route]
+            [clojure.contrib.sql :as sql])
   (:import (java.sql DriverManager)))
 
 ;; Database stuff
@@ -21,9 +21,9 @@
    db
    (sql/transaction
     (sql/create-table
-     :something
+     :quotes
      [:id :int "PRIMARY KEY"]
-     [:name "varchar(32)"]))))
+     [:quote "text"]))))
 
 
 ;; Actual app
@@ -45,11 +45,11 @@
           [:title title]]
         [:body body]]))
 
-(defroutes example
+(defroutes main
   (GET "/" [] (html-outline "Quotefile" (list-quotes)))
   (GET "/:id" [id] (html-outline (str "Quote " id) (quotes (int id))))
   (route/not-found "Page not found"))
 
-(future (run-jetty example {:port 8080}))
+(future (run-jetty main {:port 8080}))
 
 
