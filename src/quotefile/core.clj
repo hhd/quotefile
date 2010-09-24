@@ -2,9 +2,11 @@
 (ns quotefile.core
   (:use compojure.core
         ring.adapter.jetty
-        hiccup.core)
+        hiccup.core
+        hiccup.page-helpers)
   (:require [compojure.route :as route]
-            [clojure.contrib.sql :as sql])
+            [clojure.contrib.sql :as sql]
+            [clojure.contrib.str-utils2 :as str])
   (:import (java.sql DriverManager)))
 
 (def quotes [
@@ -53,9 +55,14 @@
       (doall results))))
 
 ;; Actual app
+(defn format-quote [quote]
+  (map (fn [l] [:p l]) (str/split-lines quote)))
+
 (defn list-quotes []
   "Display the page that lists quotes"
-  (map (fn [quote] [:li (:quote quote)]) (select-quotes)))
+  (ordered-list
+    (map (fn [quote] (format-quote (:quote quote)))
+         (select-quotes))))
 
 (defn html-outline [title body]
     (html
