@@ -2,6 +2,8 @@
 (ns quotefile.core
   (:use compojure.core
         ring.adapter.jetty
+        ring.middleware.reload
+        ring.middleware.stacktrace
         hiccup.core
         hiccup.page-helpers)
   (:require [compojure.route :as route]
@@ -71,11 +73,16 @@
           [:title title]]
         [:body body]]))
 
-(defroutes main
+(defroutes handler
   (GET "/" [] (html-outline "Quotefile" (list-quotes)))
   (GET "/:id" [id] (html-outline (str "Quote " id) (quotes (int id))))
   (route/not-found "Page not found"))
 
-(future (run-jetty main {:port 8080}))
+(def app
+  (-> #'handler
+    (wrap-reload '[quotefile.core])
+    (wrap-stacktrace)))
+
+(future (run-jetty app {:port 8080}))
 
 
