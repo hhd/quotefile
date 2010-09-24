@@ -27,11 +27,6 @@
      [:id :integer "PRIMARY KEY AUTOINCREMENT"]
      [:quote "text"]))))
 
-(defn seed-database
-  "Seeds the database with a few quotes"
-  []
-  (map (fn [q] (insert-quote q)) quotes))
-
 (defn insert-quote
   "Inserts a quote into the database"
   [quote]
@@ -39,10 +34,22 @@
     (sql/insert-records "quotes"
       {:quote quote})))
 
+(defn seed-database
+  "Seeds the database with a few quotes"
+  []
+  (map (fn [q] (insert-quote q)) quotes))
+
 (defn select-quotes
   "Grabs all quotes from the database"
   []
   (sql/with-connection db
     (sql/with-query-results results ["select * from quotes"]
       (doall results))))
+
+(defn select-quote
+  "Grabs one quote from the database"
+  [id]
+  (sql/with-connection db
+    (sql/with-query-results results [(str "select * from quotes where id=" id)]
+      (nth (doall results) 0))))
 
