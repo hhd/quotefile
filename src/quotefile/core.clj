@@ -22,7 +22,7 @@
 
 (. Class (forName "org.sqlite.JDBC")) ; Initialize the JDBC driver
 
-(defn db-create
+(defn create-database
   "Creates the table for this model"
   []
   (sql/with-connection
@@ -39,17 +39,23 @@
   (sql/with-connection db
     (sql/insert-records "quotes"
       {:quote quote})))
-  
 
-(defn db-seed
+(defn seed-database
   "Seeds the database with a few quotes"
   []
   (map (fn [q] (insert-quote q)) quotes))
 
+(defn select-quotes
+  "Grabs all quotes from the database"
+  []
+  (sql/with-connection db
+    (sql/with-query-results results ["select * from quotes"]
+      (doall results))))
+
 ;; Actual app
 (defn list-quotes []
   "Display the page that lists quotes"
-  (map (fn [quote] [:li quote]) quotes))
+  (map (fn [quote] [:li (:quote quote)]) (select-quotes)))
 
 (defn html-outline [title body]
     (html
