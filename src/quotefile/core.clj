@@ -26,7 +26,9 @@
 (defn list-quotes []
   (html-template "Quotefile"
     (ordered-list
-      (map (fn [quote] (format-quote (:quote quote)))
+      (map (fn [quote]
+             [:a {:href (str "/" (:id quote))}
+               (format-quote (:quote quote))])
            (qdb/select-quotes)))))
 
 (defn show-quote [id]
