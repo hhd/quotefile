@@ -2,6 +2,7 @@
 (ns quotefile.core
   (:use compojure.core
         ring.adapter.jetty
+        ring.util.response
         ring.middleware.reload
         ring.middleware.stacktrace
         hiccup.core
@@ -51,6 +52,9 @@
   (GET "/" [] (list-quotes))
   (GET ["/:id", :id #"[0-9]+"] [id] (show-quote id))
   (GET "/new" [] (new-quote))
+  (POST "/" {{quote "quote"} :params}
+        (do (qdb/insert-quote quote)
+            (redirect "/")))
   (route/not-found "Page not found"))
 
 ;; Middleware and server
