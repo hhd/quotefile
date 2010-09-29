@@ -16,7 +16,7 @@ Requires leiningen and sqlite3
 - cd path/to/quotefile
 - lein deps
 - lein repl
-- (create-database)
+- (qdb/create-database)
 
 ## License
 
