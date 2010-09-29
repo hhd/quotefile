@@ -7,8 +7,6 @@
          :subname "db/db.sqlite3" ; Location of db
          :create true})
 
-(. Class (forName "org.sqlite.JDBC")) ; Initialize the JDBC driver
-
 (defn create-database
   "Creates the table for this model"
   []
