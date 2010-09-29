@@ -31,8 +31,10 @@
           [:a {:href "/new"} "Add a quote"]
           (ordered-list
             (map (fn [quote]
-              [:a {:href (str "/" (:id quote))}
-                (format-quote (:quote quote))])
+              (html [:a {:href (str "/" (:id quote))}
+                      (format-quote (:quote quote))]
+                    [:p
+                     [:a {:href (str "/" (:id quote) "/delete")} "Delete"]]))
             (qdb/select-quotes))))))
 
 (defn show-quote [id]
@@ -54,6 +56,9 @@
 (defroutes handler
   (GET "/" [] (list-quotes))
   (GET ["/:id", :id #"[0-9]+"] [id] (show-quote id))
+  (GET ["/:id/delete", :id #"[0-9]+"] [id]
+       (do (qdb/delete-quote id)
+           (redirect "/")))
   (GET "/new" [] (new-quote))
   (POST "/" {{quote "quote"} :params}
         (do (qdb/insert-quote quote)

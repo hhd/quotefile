@@ -9,13 +9,6 @@
 
 (. Class (forName "org.sqlite.JDBC")) ; Initialize the JDBC driver
 
-(def quotes [
-  "Sally: Google have some good search tools."
-  "Sally: I'm a retard. (totally without provocation while walking through a hacky sack game)"
-  "Logan: Celine! I've got balls on my site!
-   Sally: Are they in the back end?"
-  ])
-
 (defn create-database
   "Creates the table for this model"
   []
@@ -34,11 +27,6 @@
     (sql/insert-records "quotes"
       {:quote quote})))
 
-(defn seed-database
-  "Seeds the database with a few quotes"
-  []
-  (map (fn [q] (insert-quote q)) quotes))
-
 (defn select-quotes
   "Grabs all quotes from the database"
   []
@@ -52,4 +40,11 @@
   (sql/with-connection db
     (sql/with-query-results results [(str "select * from quotes where id=" id)]
       (nth (doall results) 0))))
+
+(defn delete-quote
+  "Delete a quote"
+  [id]
+  (sql/with-connection db
+    (sql/transaction
+      (sql/delete-rows :quotes ["id=?" id]))))
 
